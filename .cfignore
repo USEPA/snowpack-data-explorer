@@ -1,0 +1,6 @@
+*.RData
+*.Rhistory
+*.RDataTmp
+*.RDataTmp1
+*.gitignore
+*.md
