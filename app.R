@@ -43,9 +43,9 @@ technical_Details <- paste0("<p>The Snowpack Data Explorer tool provides histori
                             "conditions for HUC4 watersheds in the western United States. HUC4 daily values for precipitation and snowpack were ",
                             "calculated by averaging the daily HUC8 values. HUC8 values were calculated using five models from the Bureau of Reclamation ",
                             "(BOR) LOCA Coupled Model Intercomparison Project Phase 5 (CMIP5) dataset, all using Representative Concentration Pathway (RCP) 8.5. ",
-                            "The five models were:</p><p style = \"text-indent: 40px\">1. National Center for Atmospheric Research (CCSM4),<p><p style = \"text-indent: 40px\">2. NASA Goddard Institute for Space Studies (GISS-E2-R)</p><p style = \"text-indent: 40px\">",
-                            "3. Canadian Centre for Climate Modeling and Analysis (CanESM2)</p><p style = \"text-indent: 40px\">4. Met Office Hadley Centre (HadGEM2-ES)</p><p style = \"text-indent: 40px\">",
-                            "5. Atmosphere and Ocean Research Institute, National Institute for Environmental Studies, and Japan Agency for Marine-Earth Science and Technology (MIROC5)</p><p>",
+                            "The five models were:</p><p style = \"text-indent: 40px\"><ul><li>National Center for Atmospheric Research (CCSM4)</li><p><p style = \"text-indent: 40px\"><li>NASA Goddard Institute for Space Studies (GISS-E2-R)</li></p><p style = \"text-indent: 40px\">",
+                            "<li>Canadian Centre for Climate Modeling and Analysis (CanESM2)</li></p><p style = \"text-indent: 40px\"><li>Met Office Hadley Centre (HadGEM2-ES)</li></p><p style = \"text-indent: 40px\">",
+                            "<li>Atmosphere and Ocean Research Institute, National Institute for Environmental Studies, and Japan Agency for Marine-Earth Science and Technology (MIROC5)</li></ul></p><p>",
                             "Model selection rationale described in \"Multi-Model Framework for Quantitative Sectoral Impacts Analysis: A Technical Report for the Fourth National Climate ",
                             "Assessment. U.S. Environmental Protection Agency, EPA 430-R-17-001.\" More about the CMIP5 projections can be found ", 
                             "<a href=\"https://gdo-dcp.ucllnl.org/downscaled_cmip_projections/dcpInterface.html\">here</a>.</p><p>",
@@ -156,6 +156,8 @@ snowpack_by_month <- function(.data, percentile_max) {
   
   baseline_max <- percentile_max %>% filter(period=="Baseline")
   future_max <- percentile_max %>% filter(period=="Future")
+  
+  # This is used to try to set how far about the graph sets the labels from each other
   if(future_max$maxp90>1) {
     future_y_nudge = 1
     baseline_y_nudge = -0.25
@@ -193,11 +195,13 @@ snowpack_by_month <- function(.data, percentile_max) {
     scale_fill_manual("Period", values = colors_fill) +
     scale_color_manual("Period", values = colors_fill) +
     
-    # The point objects are what the cursor is allowed to hover on
+    
+    # Adds a point corresponding to the maximum baseline value
     geom_point(data=baseline_max,
                aes(x=date90, y = maxp90, fill=period, color = period),
-               size = 3) +
-    
+               size = 4) +
+
+    # Adding static labels
     geom_label_repel(data=baseline_max,
                      aes(x=date90, y = maxp90,
                          label = paste("Max ",period, " Peak",
@@ -214,11 +218,13 @@ snowpack_by_month <- function(.data, percentile_max) {
                      label.padding = 0.5,
                      force=10,
                      label.size = 0) +
-    
+
+    # Adds a point corresponding to the maximum future value
     geom_point(data=future_max,
                aes(x=date90, y = maxp90, fill=period, color = period),
-               size = 3) +
-    
+               size = 4) +
+
+    # Adding static lablels
     geom_label_repel(data=future_max,
                      aes(x=date90, y = maxp90,
                          label = paste0("Max ",period, " Peak",
@@ -237,9 +243,10 @@ snowpack_by_month <- function(.data, percentile_max) {
                      show.legend = FALSE,
                      label.padding = 0.5) +
     
+    # Adds a point corresponding to 10th percentile maximums for future and baseline
     geom_point(data=percentile_max,
                aes(x=date10, y = maxp10, fill=period, color = period),
-               size = 3) +
+               size = 4) +
     
     # Set theme
     theme_minimal() +
@@ -285,8 +292,8 @@ precip_chart <- function(.data) {
     ggplot(aes(x = `Type of Year`, y = `Percent of Years`, fill = Period, color = Period)) +
     geom_bar(stat="identity", position = "dodge2", alpha=0.6) +
     
-    
-    geom_label(aes(label = paste0(round(`Percent of Years`,0), "%")),
+    # Add Static labels to the precip plot
+    geom_label(aes(label = paste0(" ",round(`Percent of Years`,0), "%")),
                size=5,
                label.size=0,
                color = "white",
@@ -294,14 +301,17 @@ precip_chart <- function(.data) {
                vjust=1.3,
                fontface = "bold",
                show.legend = FALSE,
-               label.padding = unit(0.3, "lines")) +
+               label.padding = unit(0.25, "lines")) +
     
-    
+    # Set colors in charts
     scale_fill_manual(values = c("#808080", "#1953bd")) +
     scale_color_manual(values = c("#808080", "#1953bd")) +
+    
+    # Labeling the x and y axis
     scale_y_continuous(labels = scales::percent_format(accuracy=1, scale = 1)) +
     scale_x_discrete(labels = c("Drier", "Normal", "Wetter")) +
     
+    # Setting different elements of plot
     theme_minimal() +
     theme(panel.grid.major.x = element_blank(),
           axis.text = element_text(size = 14, family = "sans"),
