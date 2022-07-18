@@ -450,11 +450,15 @@ server <- function(input, output) {
   selected <- reactiveValues(groups = vector())
   
   # Set initial messages
-  output$watershed_name_huc <- renderText(paste0("The Snowpack Data Explorer provides snowpack and precipitation data for HUC4 watersheds",
-                                                 " in the Western U.S. Click on your watershed of interest to view plots and compare the ranges of ",
-                                                 "snowpack data for baseline (historical data from 1982-2005) and future (model projections for 2070-2099) ",
-                                                 "time periods. Use the tabs to toggle between views. Use the tabs to toggle between views. View the \"Technical Details\" for ",
-                                                 "more information on the data sources."))
+  output$watershed_name_huc <- renderText(paste0("The Snowpack Data Explorer provides snowpack ",
+                                                 "and precipitation data for Hydrologic Unit Code 4 (HUC) ",
+                                                 "watersheds in the Western U.S. Click on your watershed of ",
+                                                 "interest to view plots and compare the ranges of snowpack ",
+                                                 "data for baseline (historical data from 1982-2005) and future ",
+                                                 "(model projections for 2070-2099) time periods. Use the tabs to ",
+                                                 "toggle between views. View the \"Technical Details\" for more ",
+                                                 "information on the data sources."))
+                                             
   output$narrative <- renderText("")
   output$precip_narrative <- renderText("")
   
