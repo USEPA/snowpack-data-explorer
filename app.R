@@ -3,7 +3,7 @@
 # Set base parameters #### --- --- --- --- --- --- --- --- --- --- --- ---
 
 # Import libraries
-library(rgdal)
+# library(rgdal)
 # library(Cairo)
 library(ggh4x)
 library(shiny)
@@ -16,6 +16,7 @@ library(plotly)
 library(ggthemes)
 library(ggnewscale)
 library(ggrepel)
+library(sf)
 
 
 # Seaglass color palet
@@ -27,9 +28,9 @@ sg_cobalt_dark <- "#1953bd"
 
 
 # Get huc4s
-huc4s_simple <- readOGR("huc4s.shp",
+huc4s_simple <- read_sf(dsn=".",
                         layer = "huc4s",
-                        GDAL1_integer64_policy = TRUE)
+                        int64_as_string = FALSE)
 
 labels_huc4 <- huc4s_simple$name
 
@@ -144,9 +145,8 @@ leaflet_map <- function() {
             labelOptions = label_options,
             options = pathOptions(pane = "selected")
         ) %>%
-        
+
         hideGroup(group = huc4s_simple$name)
-    
     return(map)
 }
 
@@ -504,8 +504,9 @@ server <- function(input, output) {
       # Get watershed information --- --- --- --- --- --- --- ---
       
       # Current click = HUC4 name    
-      huc_name <- input$map_shape_click$id                           
-      huc_code <- huc4s_simple@data %>%  # Get HUC as vector
+      huc_name <- input$map_shape_click$id    
+
+      huc_code <- huc4s_simple %>%  # Get HUC as vector
         subset(name == huc_name) %>%
         pull(huc4)
       
