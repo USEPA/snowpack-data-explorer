@@ -451,8 +451,8 @@ server <- function(input, output) {
   
   # Set initial messages
   output$watershed_name_huc <- renderText(paste0("The Snowpack Data Explorer provides snowpack ",
-                                                 "and precipitation data for Hydrologic Unit Code 4 (HUC) ",
-                                                 "watersheds in the Western U.S. Click on your watershed of ",
+                                                 "and precipitation data for Hydrologic Unit Code 4 (HUC4) ",
+                                                 "watersheds in the Western United States. Click on your watershed of ",
                                                  "interest to view plots. Use the tabs to toggle between views. ",
                                                  "Each plot compares the baseline (historical data from 1982-2005) ",
                                                  "and future (model projections for 2070-2099) time periods. ",
