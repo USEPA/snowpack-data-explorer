@@ -40,7 +40,7 @@ labels_huc4 <- huc4s_simple$name
 # colors_line_2 <- scale_color_manual(values = c("darkgrey", "darkgrey", sg_cobalt_glow2, sg_teal_glow2))
 
 # Technical Details 
-technical_Details <- paste0("<p>The Snowpack Data Explorer tool provides historical (1982 - 2005) and projected (2070 - 2099) snowpack and precipitation ",
+technical_Details <- paste0("<p>The Snowpack Data Explorer provides historical (1982 - 2005) and projected (2070 - 2099) snowpack and precipitation ",
                             "conditions for HUC4 watersheds in the western United States. HUC4 daily values for precipitation and snowpack were ",
                             "calculated by averaging the daily HUC8 values. HUC8 values were calculated using five models from the Bureau of Reclamation ",
                             "(BOR) LOCA Coupled Model Intercomparison Project Phase 5 (CMIP5) dataset, all using Representative Concentration Pathway (RCP) 8.5. ",
@@ -49,14 +49,14 @@ technical_Details <- paste0("<p>The Snowpack Data Explorer tool provides histori
                             "<li>Atmosphere and Ocean Research Institute, National Institute for Environmental Studies, and Japan Agency for Marine-Earth Science and Technology (MIROC5)</li></ul></p><p>",
                             "Model selection rationale described in \"Multi-Model Framework for Quantitative Sectoral Impacts Analysis: A Technical Report for the Fourth National Climate ",
                             "Assessment. U.S. Environmental Protection Agency, EPA 430-R-17-001.\" More about the CMIP5 projections can be found ", 
-                            "<a href=\"https://gdo-dcp.ucllnl.org/downscaled_cmip_projections/dcpInterface.html\">here</a>.</p><p>",
+                            "<a href=\"https://gdo-dcp.ucllnl.org/downscaled_cmip_projections/dcpInterface.html\" target=\"_blank\" rel=\"noopener noreferrer\">here</a>.</p><p>",
                             "Snowpack plots display the 90th and 10th percentiles of daily snowpack values,for both the baseline (historical) and future (projected) ",
                             "time periods. The daily 90th and 10th percentile values were calculated using all model runs for each date, ",
                             "corresponding to 120 historical snowpack values (5 models * 24 years) and 150 projected snowpack values (5 models * 30 years) for every date of the year.</p><p>",
                             "Precipitation plots display the distribution of annual precipitation totals within three categories: drier years, normal years, and wetter years. ",
                             "As with snowpack data, there are 120 historical annual precipitation values (5 models * 24 years) and 150 projected annual precipitation values (5 models * 30 years). ",
                             "Normal years are those with total precipitation between the 25th and 75th percentiles of historical annual precipitation totals.</p><p>",
-                            "To view the EPA GIT Hub, visit <a href=\"https://github.com/USEPA/snowpack-data-explorer\">here</a>.</p>")
+                            "This app is also available on the EPA GIT Hub <a href=\"https://github.com/USEPA/snowpack-data-explorer\" target=\"_blank\" rel=\"noopener noreferrer\">here</a>.</p>")
 
 
 sg_teal_glow2 <- "#a0e49a"
@@ -453,11 +453,11 @@ server <- function(input, output) {
   output$watershed_name_huc <- renderText(paste0("The Snowpack Data Explorer provides snowpack ",
                                                  "and precipitation data for Hydrologic Unit Code 4 (HUC) ",
                                                  "watersheds in the Western U.S. Click on your watershed of ",
-                                                 "interest to view plots and compare the ranges of snowpack ",
-                                                 "data for baseline (historical data from 1982-2005) and future ",
-                                                 "(model projections for 2070-2099) time periods. Use the tabs to ",
-                                                 "toggle between views. View the \"Technical Details\" for more ",
-                                                 "information on the data sources."))
+                                                 "interest to view plots. Use the tabs to toggle between views. ",
+                                                 "Each plot compares the baseline (historical data from 1982-2005) ",
+                                                 "and future (model projections for 2070-2099) time periods. ",
+                                                 "View the \"Technical Details\" for more information ",
+                                                 "on the data sources."))
                                              
   output$narrative <- renderText("")
   output$precip_narrative <- renderText("")
