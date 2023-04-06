@@ -1,6 +1,7 @@
 packages:
 - packages:
     - name: ggh4x
+    - name: shiny
     - name: bslib
     - name: shinydashboard
     - name: leaflet
@@ -9,5 +10,5 @@ packages:
     - name: plotly
     - name: ggthemes
     - name: ggnewscale
-    - name: rgdal
     - name: ggrepel
+    - name: sf
