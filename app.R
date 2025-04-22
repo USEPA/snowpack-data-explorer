@@ -40,22 +40,16 @@ labels_huc4 <- huc4s_simple$name
 # colors_line_2 <- scale_color_manual(values = c("darkgrey", "darkgrey", sg_cobalt_glow2, sg_teal_glow2))
 
 # Technical Details 
-technical_Details <- paste0("<p>The Snowpack Data Explorer provides historical (1982 - 2005) and projected (2070 - 2099) snowpack and precipitation ",
+technical_Details <- paste0("<p>The Snowpack Data Explorer uses a baseline of historical (1982 - 2005) conditions and a planning scenario based on projected (2070 - 2099) snowpack and precipitation ",
                             "conditions for HUC4 watersheds in the western United States. HUC4 daily values for precipitation and snowpack were ",
                             "calculated by averaging the daily HUC8 values. HUC8 values were calculated using five models from the Bureau of Reclamation ",
-                            "(BOR) LOCA Coupled Model Intercomparison Project Phase 5 (CMIP5) dataset, all using Representative Concentration Pathway (RCP) 8.5. ",
-                            "The five models were:</p><p style = \"text-indent: 40px\"><ul><li>National Center for Atmospheric Research (CCSM4)</li><p><p style = \"text-indent: 40px\"><li>NASA Goddard Institute for Space Studies (GISS-E2-R)</li></p><p style = \"text-indent: 40px\">",
-                            "<li>Canadian Centre for Climate Modeling and Analysis (CanESM2)</li></p><p style = \"text-indent: 40px\"><li>Met Office Hadley Centre (HadGEM2-ES)</li></p><p style = \"text-indent: 40px\">",
-                            "<li>Atmosphere and Ocean Research Institute, National Institute for Environmental Studies, and Japan Agency for Marine-Earth Science and Technology (MIROC5)</li></ul></p><p>",
-                            "Model selection rationale described in \"Multi-Model Framework for Quantitative Sectoral Impacts Analysis: A Technical Report for the Fourth National Climate ",
-                            "Assessment. U.S. Environmental Protection Agency, EPA 430-R-17-001.\" More about the CMIP5 projections can be found ", 
-                            "<a href=\"https://gdo-dcp.ucllnl.org/downscaled_cmip_projections/dcpInterface.html\" target=\"_blank\" rel=\"noopener noreferrer\">here</a>.</p><p>",
-                            "Snowpack plots display the 90th and 10th percentiles of daily snowpack values,for both the baseline (historical) and future (projected) ",
-                            "time periods. The daily 90th and 10th percentile values were calculated using all model runs for each date, ",
-                            "corresponding to 120 historical snowpack values (5 models * 24 years) and 150 projected snowpack values (5 models * 30 years) for every date of the year.</p><p>",
-                            "Precipitation plots display the distribution of annual precipitation totals within three categories: drier years, normal years, and wetter years. ",
-                            "As with snowpack data, there are 120 historical annual precipitation values (5 models * 24 years) and 150 projected annual precipitation values (5 models * 30 years). ",
-                            "Normal years are those with total precipitation between the 25th and 75th percentiles of historical annual precipitation totals.</p><p>",
+                            "LOCA Coupled Model Intercomparison Project Phase 5 (CMIP5) dataset, all using Representative Concentration Pathway (RCP) 8.5.</p><p> ",
+                            "Model selection rationale is described in \"Multi-Model Framework for Quantitative Sectoral Impacts Analysis: A Technical Report for the Fourth National Climate ",
+                            "Assessment. U.S. Environmental Protection Agency, EPA 430-R-17-001.\" More about CMIP5 can be found ", 
+                            "<a href=\"https://gdo-dcp.ucllnl.org/downscaled_cmip_projections/dcpInterface.html\" target=\"_blank\" rel=\"noopener noreferrer\">here</a>. ",
+                            "The five models used to estimate the planning scenarios were: CCSM4, GISS-E2-R, CanESM2, HadGEM2-ES, and MIROC5.</p><p>",
+                            "For both snowpack and precipitation data, precentile values were calculated using all 120 baseline values (5 models * 24 years) ",
+                            "and 150 planning scenarios (5 models * 30 years).</p><p>",
                             "This app is also available on the EPA GIT Hub <a href=\"https://github.com/USEPA/snowpack-data-explorer\" target=\"_blank\" rel=\"noopener noreferrer\">here</a>.</p>")
 
 
@@ -96,7 +90,7 @@ leaflet_map <- function() {
         ) %>%
         
         # Create map and add max and min zoom
-        addProviderTiles(providers$CartoDB.Positron,
+        addProviderTiles(providers$CartoDB.PositronNoLabels,
                          options = providerTileOptions(minZoom = 4,
                                                        maxZoom = 5)) %>%
         
@@ -155,7 +149,7 @@ snowpack_by_month <- function(.data, percentile_max) {
   
   
   baseline_max <- percentile_max %>% filter(period=="Baseline")
-  future_max <- percentile_max %>% filter(period=="Future")
+  future_max <- percentile_max %>% filter(period=="Planning")
   
   # This is used to try to set how far about the graph sets the labels from each other
   if(future_max$maxp90>1) {
@@ -346,7 +340,7 @@ percentileMax <- as.data.frame(fread("percentile_maximums_2022-04-21.csv", heade
 ui <- fluidPage(tagList(
   navbarPage(
     # Set name and theme
-    "Snowpack Data Explorer",
+    "Snowpack Explorer",
     theme = bs_theme(version = 5, bootswatch = "flatly"),
     
     
@@ -450,12 +444,12 @@ server <- function(input, output) {
   selected <- reactiveValues(groups = vector())
   
   # Set initial messages
-  output$watershed_name_huc <- renderText(paste0("The Snowpack Data Explorer provides snowpack ",
-                                                 "and precipitation data for Hydrologic Unit Code 4 (HUC4) ",
-                                                 "watersheds in the Western United States. Click on your watershed of ",
-                                                 "interest to view plots. Use the tabs to toggle between views. ",
-                                                 "Each plot compares the baseline (historical data from 1982-2005) ",
-                                                 "and future (model projections for 2070-2099) time periods. ",
+  output$watershed_name_huc <- renderText(paste0("The Snowpack Explorer provides ",
+                                                 "data for Hydrologic Unit Code 4 (HUC4) ",
+                                                 "watersheds in the Western United States. Click on your watershed ",
+                                                 "to view plots and use the tabs to toggle between views. ",
+                                                 "Each plot compares two temperature and precipitation scenarios for assessing ",
+                                                 "reliability, including a baseline for comparison. ",
                                                  "View the \"Technical Details\" for more information ",
                                                  "on the data sources."))
                                              
@@ -530,32 +524,32 @@ server <- function(input, output) {
       # Print messages to app --- --- --- --- --- --- --- ---
       
       # Generate messages
-      dateDif <- data_percentile$date90[data_percentile$period=="Future"] - data_percentile$date90[data_percentile$period=="Baseline"]
+      dateDif <- data_percentile$date90[data_percentile$period=="Planning"] - data_percentile$date90[data_percentile$period=="Baseline"]
       beforeAfter<-ifelse(dateDif>0,ifelse(dateDif==1," day later", " days later"), ifelse(dateDif==-1, " day earlier", " days earlier"))
       
-      normalMoreLess <- ifelse(precip_data$percent[precip_data$Period=="Future" & precip_data$`Type of Year`=="Normal"] > 50, "an increase", 
-                         ifelse(precip_data$percent[precip_data$Period=="Future" & precip_data$`Type of Year`=="Normal"] == 50, "no change", "a decrease"))
+      normalMoreLess <- ifelse(precip_data$percent[precip_data$Period=="Planning" & precip_data$`Type of Year`=="Normal"] > 50, "more", 
+                         ifelse(precip_data$percent[precip_data$Period=="Planning" & precip_data$`Type of Year`=="Normal"] == 50, "no change in", "fewer"))
       
-      wetterMoreLess <- ifelse(precip_data$percent[precip_data$Period=="Future" & precip_data$`Type of Year`=="Wet"] > 25, "an increase", 
-                               ifelse(precip_data$percent[precip_data$Period=="Future" & precip_data$`Type of Year`=="Wet"] == 25, "no change", "a decrease"))
+      wetterMoreLess <- ifelse(precip_data$percent[precip_data$Period=="Planning" & precip_data$`Type of Year`=="Wet"] > 25, "more", 
+                               ifelse(precip_data$percent[precip_data$Period=="Planning" & precip_data$`Type of Year`=="Wet"] == 25, "no change in", "fewer"))
       
-      drierMoreLess <- ifelse(precip_data$percent[precip_data$Period=="Future" & precip_data$`Type of Year`=="Dry"] > 25, "an increase", 
-                               ifelse(precip_data$percent[precip_data$Period=="Future" & precip_data$`Type of Year`=="Dry"] == 25, "no change", "a decrease"))
+      drierMoreLess <- ifelse(precip_data$percent[precip_data$Period=="Planning" & precip_data$`Type of Year`=="Dry"] > 25, "more", 
+                               ifelse(precip_data$percent[precip_data$Period=="Planning" & precip_data$`Type of Year`=="Dry"] == 25, "no change in", "fewer"))
       
       watershed_name_huc <- paste(huc_name, " Watershed |", "HUC4 Code: ", huc_code)
       watershed_huc <- paste("HUC4 Code: ", huc_code)
       narrative <- paste0("Snowpack is displayed as a seasonal time series of the ratio of snow-water equivalent (SWE) to the baseline peak SWE. ",
-                         "The shaded ranges depict the range from 10th to 90th percentile for each time period in the ",
-                         huc_name, " watershed.  Models project that the future peak SWE may be ",
-                         round(data_percentile$maxp90[data_percentile$period=="Future"]*100,0), "% of the baseline peak and could occur ",
+                         "The shaded ranges depict the range from 10th to 90th percentile in the ",
+                         huc_name, " watershed.  The peak SWE of the planning scenario may be ",
+                         round(data_percentile$maxp90[data_percentile$period=="Planning"]*100,0), "% of the baseline peak and could occur ",
                          abs(dateDif), beforeAfter, ".")
       
 
       precip_narrative <- paste0("Precipitation is displayed as the fraction of years in each time period that are wetter or drier than the \"normal\" years in the baseline data. ",
                                  "\"Normal\" years are those years in the baseline with annual total precipitation between the 25th and 75th percentile of all baseline years. ",
-                                 "Shifts between the distribution of years in the future time period, based on projected total annual precipitation, describe how often drier and " ,
-                                 "wetter years could be expected by end of century in the ", huc_name, " watershed. Models project that in the future period, there will be ", 
-                                 drierMoreLess, " in drier years, ", normalMoreLess, " in normal years, and ", wetterMoreLess, " in wetter years.")
+                                 "Any shifts between the planning and baseline scenarios describe how often drier and " ,
+                                 "wetter years occur and could alter snowpack in the ", huc_name, " watershed. The planning scenario has ", 
+                                 drierMoreLess, " drier years, ", normalMoreLess, " normal years, and ", wetterMoreLess, " wetter years.")
       
       # Message for app
       output$watershed_name_huc <- renderText(watershed_name_huc)
