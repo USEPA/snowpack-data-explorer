@@ -176,9 +176,9 @@ snowpack_by_month <- function(.data, percentile_max) {
     ggplot(aes(x = month_day, fill = period, color = period, text = "")) +
     
     # One line for max snowpack
-    geom_line(aes(y = pct90), size = 1) +
+    geom_line(aes(y = pct90), linewidth = 1) +
     # Another line for min snowpack
-    geom_line(aes(y = pct10), size = 1) +
+    geom_line(aes(y = pct10), linewidth = 1) +
     
     
     # stat_difference() from ggh4x package applies the conditional fill
@@ -199,7 +199,7 @@ snowpack_by_month <- function(.data, percentile_max) {
     geom_label_repel(data=baseline_max,
                      aes(x=date90, y = maxp90,
                          label = paste("Max ",period, " Peak",
-                                       "\nDate: ", format(date90, "%B %d"), sep=""),
+                                       "\nDate: ", format(as.Date(date90,"%Y/%m/%d"), "%B %d"), sep=""),
                          size=20),
                      nudge_x = 150,
                      nudge_y = baseline_y_nudge,
@@ -222,7 +222,7 @@ snowpack_by_month <- function(.data, percentile_max) {
     geom_label_repel(data=future_max,
                      aes(x=date90, y = maxp90,
                          label = paste0("Max ",period, " Peak",
-                                       "\nDate: ", format(date90, "%B %d")
+                                       "\nDate: ", format(as.Date(date90,"%Y/%m/%d"), "%B %d")
                                        # ,"\n% of Max Baseline Peak: ",
                                        # round(maxp90*100, 0), "%",sep=""
                                        ),
@@ -327,7 +327,7 @@ precip_chart <- function(.data) {
 
 # Import data ####
 data <- as.data.frame(fread("huc4_for_RShiny_2022-04-21.csv", header = TRUE) %>%  #"huc4_daily_averages_2022-03-22.csv"
-  mutate(month_day = as.Date(month_day)))
+  mutate(month_day = as.Date(month_day, "%m/%d/%Y")))
 
 yearPrecipClassification <- as.data.frame(fread("year_precip_class_2022-04-21.csv", header = TRUE)) %>% 
                                             mutate(`Percent of Years` = round(percent, 1))
@@ -508,7 +508,10 @@ server <- function(input, output) {
       
       data_current <- data %>% subset(HUC4 == huc_code)
       
-      data_percentile <- percentileMax %>% subset(HUC4 == huc_code)
+      data_percentile <- percentileMax %>%
+        subset(HUC4 == huc_code) %>%
+        mutate(date90 = as.Date(date90,"%m/%d/%Y")) %>%
+        mutate(date10 = as.Date(date10,"%m/%d/%Y"))
       
       precip_data <- yearPrecipClassification %>% subset(HUC4 == huc_code)
       
