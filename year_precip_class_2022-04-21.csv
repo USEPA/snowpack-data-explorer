@@ -20,9 +20,9 @@ HUC4,Period,wet_dry_normal,sum_model_years,percent
 1005,Baseline,Wet,30,25
 1005,Baseline,Dry,30,25
 1005,Baseline,Normal,60,50
-1005,Planning,Wet,37,25.51724138
-1005,Planning,Dry,21,14.48275862
-1005,Planning,Normal,58,40
+1005,Planning,Wet,37,31.89655172
+1005,Planning,Dry,21,18.10344825
+1005,Planning,Normal,58,50
 1007,Baseline,Wet,30,25
 1007,Baseline,Dry,30,25
 1007,Baseline,Normal,60,50
@@ -122,9 +122,9 @@ HUC4,Period,wet_dry_normal,sum_model_years,percent
 1407,Baseline,Wet,30,25
 1407,Baseline,Dry,30,25
 1407,Baseline,Normal,60,50
-1407,Planning,Wet,48,33.10344828
-1407,Planning,Dry,28,19.31034483
-1407,Planning,Normal,40,27.5862069
+1407,Planning,Wet,48,41.37931034
+1407,Planning,Dry,28,24.13793103
+1407,Planning,Normal,40,34.48275862
 1408,Baseline,Wet,30,25
 1408,Baseline,Dry,30,25
 1408,Baseline,Normal,60,50
